@@ -52,10 +52,10 @@
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
+TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim4;
 
 UART_HandleTypeDef huart5;
-
 char ch[5]={'b','e','n','i',' '};
 
 osThreadId defaultTaskHandle;
@@ -64,6 +64,9 @@ osThreadId Task02Handle;
 osMessageQId myQueue01Handle;
 osMessageQId myQueue02Handle;
 osTimerId Timer01Handle;
+
+
+
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
@@ -78,18 +81,14 @@ void Error_Handler(void);
 static void MX_GPIO_Init(void);
 static void MX_TIM4_Init(void);
 static void MX_UART5_Init(void);
+static void MX_TIM2_Init(void);
 void StartDefaultTask(void const * argument);
 void StartTask01(void const * argument);
 void StartTask02(void const * argument);
 void Callback01(void const * argument);                                    
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
-#ifdef __GNUC__
-/* With GCC/RAISONANCE, small printf (option LD Linker->Libraries->Small printf
-   set to 'Yes') calls __io_putchar() */
-#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
-#else
-#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
-#endif /* __GNUC__ */
+void user_pwm_setvalue(uint16_t value,TIM_HandleTypeDef htimX,uint32_t channel );
+                                
                                 
 
 /* USER CODE BEGIN PFP */
@@ -120,6 +119,7 @@ int main(void)
   MX_GPIO_Init();
   MX_TIM4_Init();
   MX_UART5_Init();
+  MX_TIM2_Init();
 
   /* USER CODE BEGIN 2 */
 
@@ -176,7 +176,6 @@ int main(void)
   /* Start scheduler */
   osKernelStart();
   
-
   /* We should never get here as control is now taken by the scheduler */
 
   /* Infinite loop */
@@ -191,21 +190,6 @@ int main(void)
   /* USER CODE END 3 */
 
 }
-
-/**
-  * @brief  Retargets the C library printf function to the USART.
-  * @param  None
-  * @retval None
-  */
-PUTCHAR_PROTOTYPE
-{
-  /* Place your implementation of fputc here */
-  /* e.g. write a character to the USART3 and Loop until the end of transmission */
-  HAL_UART_Transmit(&huart5, (uint8_t *)&ch, 1, 0xFFFF);
-
-  return ch;
-}
-
 
 /** System Clock Configuration
 */
@@ -256,6 +240,43 @@ void SystemClock_Config(void)
 
   /* SysTick_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(SysTick_IRQn, 15, 0);
+}
+
+/* TIM2 init function */
+static void MX_TIM2_Init(void)
+{
+
+  TIM_MasterConfigTypeDef sMasterConfig;
+  TIM_OC_InitTypeDef sConfigOC;
+
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 12;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 25000;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  if (HAL_TIM_PWM_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  sConfigOC.OCMode = TIM_OCMODE_PWM1;
+  sConfigOC.Pulse = 0;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  if (HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_4) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  HAL_TIM_MspPostInit(&htim2);
+
 }
 
 /* TIM4 init function */
@@ -373,13 +394,13 @@ void StartTask01(void const * argument)
   /* USER CODE BEGIN StartTask01 */
   /* Infinite loop */
 	TickType_t xLastWakeTime;
-	const TickType_t xFrequency = 500;// MAKETIME_MS();
+	const TickType_t xFrequency = 500;
 
 	// Initialise the xLastWakeTime variable with the current time.
 	xLastWakeTime = xTaskGetTickCount();
   for(;;)
   {
-	  user_pwm_setvalue(31250U);
+	  user_pwm_setvalue(20U,htim4,TIM_CHANNEL_2);
 	  // Wait for the next cycle.
 	  vTaskDelayUntil( &xLastWakeTime, xFrequency );
   }
@@ -392,7 +413,7 @@ void StartTask02(void const * argument)
   /* USER CODE BEGIN StartTask02 */
 	  /* Infinite loop */
 		TickType_t xLastWakeTime;
-		const TickType_t xFrequency = 500*portTICK_PERIOD_MS;
+		const TickType_t xFrequency = 100*portTICK_PERIOD_MS;
 		int i;
 
 		// Initialise the xLastWakeTime variable with the current time.
@@ -409,6 +430,8 @@ void StartTask02(void const * argument)
 			   HAL_UART_Transmit(&huart5, (uint8_t *)&ch[i], 1, 0xFFFF);
 
 		   }
+
+		   user_pwm_setvalue(1000U,htim2,TIM_CHANNEL_4);
 	  }
   /* USER CODE END StartTask02 */
 }

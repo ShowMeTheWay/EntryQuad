@@ -14,15 +14,17 @@
 
 /* USER CODE BEGIN  */
 
+
+
 void EnableDisablePin(unsigned int pinV)
 {
 	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, pinV);
 
 }
 
-extern TIM_HandleTypeDef htim4;
+//extern TIM_HandleTypeDef htim4;
 
-void user_pwm_setvalue(unsigned short int  value)
+void user_pwm_setvalue(uint16_t value,TIM_HandleTypeDef htimX,uint32_t channel )
 {
     TIM_OC_InitTypeDef sConfigOC;
 
@@ -30,8 +32,8 @@ void user_pwm_setvalue(unsigned short int  value)
     sConfigOC.Pulse = value;
     sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
     sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-    HAL_TIM_PWM_ConfigChannel(&htim4, &sConfigOC, TIM_CHANNEL_2);
-    HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
+    HAL_TIM_PWM_ConfigChannel(&htimX, &sConfigOC, channel);
+    HAL_TIM_PWM_Start(&htimX, channel);
 }
 /* USER CODE END  */
 

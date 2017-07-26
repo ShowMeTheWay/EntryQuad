@@ -10,7 +10,7 @@
 
 
 void EnableDisablePin(unsigned int pinV);
-
+UART_Data_Transmit(unsigned short int data_in);
 
 
 

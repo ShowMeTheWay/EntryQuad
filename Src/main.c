@@ -46,8 +46,10 @@
 #include "cmsis_os.h"
 #include "Quad.h"
 #include "adaptation.h"
+#include "arm_math.h"
 
 /* USER CODE BEGIN Includes */
+
 
 /* USER CODE END Includes */
 
@@ -55,8 +57,9 @@
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim4;
 
-UART_HandleTypeDef huart5;
-char ch[5]={'b','e','n','i',' '};
+
+char ch5[6]={"65535\n"};
+
 
 osThreadId defaultTaskHandle;
 osThreadId Task01Handle;
@@ -71,6 +74,7 @@ osTimerId Timer01Handle;
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 /* UART handler declaration */
+UART_HandleTypeDef huart5;
 
 
 /* USER CODE END PV */
@@ -88,8 +92,7 @@ void StartTask02(void const * argument);
 void Callback01(void const * argument);                                    
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 void user_pwm_setvalue(uint16_t value,TIM_HandleTypeDef htimX,uint32_t channel );
-                                
-                                
+
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -148,11 +151,11 @@ int main(void)
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of Task01 */
-  osThreadDef(Task01, StartTask01, osPriorityHigh, 0, 128);
+  osThreadDef(Task01, StartTask01, osPriorityLow, 0, 128);
   Task01Handle = osThreadCreate(osThread(Task01), NULL);
 
   /* definition and creation of Task02 */
-  osThreadDef(Task02, StartTask02, osPriorityLow, 0, 256);
+  osThreadDef(Task02, StartTask02, osPriorityHigh, 0, 256);
   Task02Handle = osThreadCreate(osThread(Task02), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
@@ -414,7 +417,13 @@ void StartTask02(void const * argument)
 	  /* Infinite loop */
 		TickType_t xLastWakeTime;
 		const TickType_t xFrequency = 100*portTICK_PERIOD_MS;
-		int i;
+		uint8_t data[3];
+		float32_t  i_rad;
+		float32_t fi_sin_rad;
+		float32_t fi_cos_rad;
+		static uint8_t grade = 0;
+		static uint16_t data_in = 0;
+
 
 		// Initialise the xLastWakeTime variable with the current time.
 		xLastWakeTime = xTaskGetTickCount();
@@ -422,16 +431,18 @@ void StartTask02(void const * argument)
 	  {
 		  // Wait for the next cycle.
 		   vTaskDelayUntil( &xLastWakeTime, xFrequency );
-		   Quad_step();
-
-		   for(i=0;i<6;i++)
+		   // Quad_step();
+		   //  HAL_UART_Receive(&huart5,(uint8_t *)&in,6,0xFFFF);
+		   if(data_in > 150)
 		   {
-
-			   HAL_UART_Transmit(&huart5, (uint8_t *)&ch[i], 1, 0xFFFF);
-
+			   data_in=0;
 		   }
-
-		   user_pwm_setvalue(1000U,htim2,TIM_CHANNEL_4);
+		   else
+		   {
+		   	   UART_Data_Transmit(data_in);
+		   	   data_in++;
+		   }
+		   //user_pwm_setvalue(1000U,htim2,TIM_CHANNEL_4);
 	  }
   /* USER CODE END StartTask02 */
 }

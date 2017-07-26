@@ -15,7 +15,7 @@ if (option_nr == 1)
     cd '../model'
     Quad_start; %run all definitions
    
-    ConfigureModel('Quad');
+    ConfigureModel('ControllerQuad');
 else
     disp('Try again,please choose the corect input');
 end

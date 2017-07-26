@@ -52,6 +52,7 @@
 /* Private define ------------------------------------------------------------*/
 
 /* USER CODE BEGIN Private defines */
+#define ARM_MATH_CM4
 
 
 

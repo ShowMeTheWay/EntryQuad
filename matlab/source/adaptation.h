@@ -11,7 +11,7 @@
 
 void EnableDisablePin(unsigned int pinV);
 UART_Data_Transmit(unsigned short int data_in);
-
+UART_Transmit_Data(float data_in);
 
 
 #endif /* ADAPTATION_H_ */

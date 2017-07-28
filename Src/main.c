@@ -433,15 +433,7 @@ void StartTask02(void const * argument)
 		   vTaskDelayUntil( &xLastWakeTime, xFrequency );
 		   // Quad_step();
 		   //  HAL_UART_Receive(&huart5,(uint8_t *)&in,6,0xFFFF);
-		   if(data_in > 150)
-		   {
-			   data_in=0;
-		   }
-		   else
-		   {
-		   	   UART_Data_Transmit(data_in);
-		   	   data_in++;
-		   }
+		   UART_Transmit_Data(rand() % 1000);
 		   //user_pwm_setvalue(1000U,htim2,TIM_CHANNEL_4);
 	  }
   /* USER CODE END StartTask02 */

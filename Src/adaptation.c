@@ -146,8 +146,9 @@ UART_Transmit_Data(float data_in)
 	gcvt(data_in,10,buff); // convert the float number in ASCII characters
 
 
+
 	HAL_UART_Transmit(&huart5, (uint8_t *)buff,buffLeng, 0xFFFF); // transmit the data
-	HAL_UART_Transmit(&huart5, (uint8_t *)newL, 2, 0xFFFF); // transmit the newL character
+	//HAL_UART_Transmit(&huart5, (uint8_t *)newL, 2, 0xFFFF); // transmit the newL character
 }
 
 

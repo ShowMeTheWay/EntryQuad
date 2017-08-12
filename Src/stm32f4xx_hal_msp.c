@@ -4,6 +4,11 @@
   * Description        : This file provides code for the MSP Initialization 
   *                      and de-Initialization codes.
   ******************************************************************************
+  * This notice applies to any and all portions of this file
+  * that are not between comment pairs USER CODE BEGIN and
+  * USER CODE END. Other portions of this file, whether 
+  * inserted by the user or by software development tools
+  * are owned by their respective copyright owners.
   *
   * Copyright (c) 2017 STMicroelectronics International N.V. 
   * All rights reserved.
@@ -44,7 +49,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 
-extern void Error_Handler(void);
+extern void _Error_Handler(char *, int);
 /* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
@@ -78,6 +83,56 @@ void HAL_MspInit(void)
   /* USER CODE BEGIN MspInit 1 */
 
   /* USER CODE END MspInit 1 */
+}
+
+void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
+{
+
+  GPIO_InitTypeDef GPIO_InitStruct;
+  if(hadc->Instance==ADC3)
+  {
+  /* USER CODE BEGIN ADC3_MspInit 0 */
+
+  /* USER CODE END ADC3_MspInit 0 */
+    /* Peripheral clock enable */
+    __HAL_RCC_ADC3_CLK_ENABLE();
+  
+    /**ADC3 GPIO Configuration    
+    PA0/WKUP     ------> ADC3_IN0 
+    */
+    GPIO_InitStruct.Pin = GPIO_PIN_0;
+    GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /* USER CODE BEGIN ADC3_MspInit 1 */
+
+  /* USER CODE END ADC3_MspInit 1 */
+  }
+
+}
+
+void HAL_ADC_MspDeInit(ADC_HandleTypeDef* hadc)
+{
+
+  if(hadc->Instance==ADC3)
+  {
+  /* USER CODE BEGIN ADC3_MspDeInit 0 */
+
+  /* USER CODE END ADC3_MspDeInit 0 */
+    /* Peripheral clock disable */
+    __HAL_RCC_ADC3_CLK_DISABLE();
+  
+    /**ADC3 GPIO Configuration    
+    PA0/WKUP     ------> ADC3_IN0 
+    */
+    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_0);
+
+  /* USER CODE BEGIN ADC3_MspDeInit 1 */
+
+  /* USER CODE END ADC3_MspDeInit 1 */
+  }
+
 }
 
 void HAL_TIM_PWM_MspInit(TIM_HandleTypeDef* htim_pwm)
@@ -238,10 +293,10 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* huart)
 
     HAL_GPIO_DeInit(GPIOD, GPIO_PIN_2);
 
-  }
   /* USER CODE BEGIN UART5_MspDeInit 1 */
 
   /* USER CODE END UART5_MspDeInit 1 */
+  }
 
 }
 

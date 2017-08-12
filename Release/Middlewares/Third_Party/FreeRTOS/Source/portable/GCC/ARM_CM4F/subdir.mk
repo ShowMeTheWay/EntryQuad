@@ -17,8 +17,8 @@ C_DEPS += \
 Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/%.o: ../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
-	@echo %cd%
-	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUSE_HAL_DRIVER -DSTM32F429xx -I"D:/workspace/SSworkspace/EntryQuad/Inc" -I"D:/workspace/SSworkspace/EntryQuad/Drivers/STM32F4xx_HAL_Driver/Inc" -I"D:/workspace/SSworkspace/EntryQuad/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"D:/workspace/SSworkspace/EntryQuad/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F" -I"D:/workspace/SSworkspace/EntryQuad/Drivers/CMSIS/Device/ST/STM32F4xx/Include" -I"D:/workspace/SSworkspace/EntryQuad/Middlewares/Third_Party/FreeRTOS/Source/include" -I"D:/workspace/SSworkspace/EntryQuad/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS" -I"D:/workspace/SSworkspace/EntryQuad/Drivers/CMSIS/Include"  -Os -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	@echo $(PWD)
+	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32F429xx -DARM_MATH_CM4 -D__FPU_PRESENT -I"D:/Beni/workspace/EntryQuad/Inc" -I"D:/Beni/workspace/EntryQuad/Drivers/STM32F4xx_HAL_Driver/Inc" -I"D:/Beni/workspace/EntryQuad/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"D:/Beni/workspace/EntryQuad/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F" -I"D:/Beni/workspace/EntryQuad/Drivers/CMSIS/Device/ST/STM32F4xx/Include" -I"D:/Beni/workspace/EntryQuad/Middlewares/Third_Party/FreeRTOS/Source/include" -I"D:/Beni/workspace/EntryQuad/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS" -I"D:/Beni/workspace/EntryQuad/Drivers/CMSIS/Include"  -Og -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 

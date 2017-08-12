@@ -380,7 +380,7 @@ static void MX_UART5_Init(void)
 {
 
   huart5.Instance = UART5;
-  huart5.Init.BaudRate = 9600;
+  huart5.Init.BaudRate = 19200;
   huart5.Init.WordLength = UART_WORDLENGTH_8B;
   huart5.Init.StopBits = UART_STOPBITS_1;
   huart5.Init.Parity = UART_PARITY_NONE;
@@ -490,13 +490,23 @@ void StartTask02(void const * argument)
 		   // Quad_step();
 
 			   //arm_sin_cos_f32(i,&s_x,&c_x);
-
-			   UART_Transmit_Data(345.87);
+		       HAL_UART_Transmit(&huart5, (uint8_t *)newL, 2, 0xFFFF);
+			   UART_Transmit_Data(567543.87);
 			   HAL_UART_Transmit(&huart5, (uint8_t *)del, 1, 0xFFFF);
 			   UART_Transmit_Data(-678.5);
 			   HAL_UART_Transmit(&huart5, (uint8_t *)del, 1, 0xFFFF);
-			   UART_Transmit_Data(123.32);
-			   HAL_UART_Transmit(&huart5, (uint8_t *)newL, 2, 0xFFFF); // transmit the newL character
+			   UART_Transmit_Data(0);
+			   HAL_UART_Transmit(&huart5, (uint8_t *)del, 1, 0xFFFF);
+			   UART_Transmit_Data(897);
+			   HAL_UART_Transmit(&huart5, (uint8_t *)del, 1, 0xFFFF);
+			   UART_Transmit_Data(-897);
+			   HAL_UART_Transmit(&huart5, (uint8_t *)del, 1, 0xFFFF);
+			   UART_Transmit_Data(-0.67);
+			   HAL_UART_Transmit(&huart5, (uint8_t *)del,1, 0xFFFF);
+			   UART_Transmit_Data(0.97);
+			   HAL_UART_Transmit(&huart5, (uint8_t *)del, 1, 0xFFFF);
+			   UART_Transmit_Data(-78);
+
 		   //user_pwm_setvalue(1000U,htim2,TIM_CHANNEL_4);
 	  }
   /* USER CODE END StartTask02 */

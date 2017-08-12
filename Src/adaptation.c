@@ -11,7 +11,7 @@
 #include "main.h"
 #include "cmsis_os.h"
 #include "math.h"
-#include "stdlib.h"
+//#include "stdlib.h"
 
 /* USER CODE BEGIN  */
 
@@ -104,21 +104,21 @@ UART_Transmit_Data(float data_in)
 		cnt++;
 	}
 
-	isInteger = data_in - (long)(data_in);
+	isInteger = data_in - (int)(data_in);
 	/*check if input data is negative*/
 	if(data_in < (float)0.0)
 	{
 		if(cnt == 0)
 		{
-			buffLeng = cnt+5;  // add 4 more digits 1-sign;1-for ".";2-digits for fractional part;1-because is a special case ex:0.123
+			buffLeng = cnt+5;  // add 4 more digits 1-sign;1-for ".";2-digits for fractional part;1-because is a special case ex:-0.123
 		}else
 		{
-			buffLeng = cnt+4; // add 4 more digits 1-sign;1-for ".";2-digits for fractional part;
+			buffLeng = cnt+4; // add 4 more digits 1-sign;1-for ".";2-digits for fractional part;67.123
 		}
 
 		if(isInteger == 0)
 		{
-			buffLeng = cnt + 1;
+			buffLeng = cnt+1;
 		}
 
 	}
@@ -134,7 +134,7 @@ UART_Transmit_Data(float data_in)
 
 		if(isInteger == 0)
 		{
-			buffLeng = cnt + 1;
+			buffLeng = cnt;
 		}
 
 	}
@@ -143,7 +143,7 @@ UART_Transmit_Data(float data_in)
 		buffLeng = 1; // add 1 position for sending 0
 	}
 	char buff[buffLeng]; // define the buffer to be send via UART
-	gcvt(data_in,10,buff); // convert the float number in ASCII characters
+	gcvt(data_in,buffLeng,buff); // convert the float number in ASCII characters
 
 
 
